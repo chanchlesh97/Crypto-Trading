@@ -11,4 +11,9 @@ public class HomeController {
 		return "Welcome to Home";
 	}
 
+	@GetMapping("/home")
+	public String secure() {
+		return "Welcome to Secure Home";
+	}
+
 }
