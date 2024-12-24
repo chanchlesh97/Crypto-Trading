@@ -10,6 +10,7 @@ import lombok.Data;
 public class TwoFactorAuth {
 
 	private boolean isEnabled = false;
-	 @Enumerated(EnumType.STRING)
+
+	@Enumerated(EnumType.STRING)
 	private VerificationType sendTo;
 }
