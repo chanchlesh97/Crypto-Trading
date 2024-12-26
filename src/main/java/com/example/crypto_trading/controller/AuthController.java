@@ -1,8 +1,12 @@
 package com.example.crypto_trading.controller;
 
 import com.example.crypto_trading.config.JwdProvider;
+import com.example.crypto_trading.modal.TwoFactorOTP;
 import com.example.crypto_trading.response.AuthResponse;
 import com.example.crypto_trading.services.CustomUserDetailsService;
+import com.example.crypto_trading.services.EmailService;
+import com.example.crypto_trading.services.TwoFactorOTPService;
+import com.example.crypto_trading.utils.OtpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.crypto_trading.modal.User;
 import com.example.crypto_trading.respository.UserRepository;
@@ -28,7 +28,14 @@ public class AuthController {
 	private UserRepository userRepository;
 
 	@Autowired
-	CustomUserDetailsService customUserDetailsService;
+	private CustomUserDetailsService customUserDetailsService;
+
+	@Autowired
+	private TwoFactorOTPService twoFactorOTPService;
+
+	@Autowired
+	private EmailService emailService;
+
 
 	@GetMapping("/signup")
     public String signUpPage() {
@@ -81,17 +88,35 @@ public class AuthController {
 
 		String jwt = JwdProvider.generateToken(authentication);
 
+		User authUser = userRepository.findByEmail(userName);
+
+		if(authUser.getTwoFactorAuth().isEnabled()){
+			AuthResponse res = new AuthResponse();
+			res.setMessage("Two factor authentication enabled");
+			res.setTwoFactorAuthEnabled(true);
+			String otp = OtpUtils.generateOTP();
+
+			TwoFactorOTP oldTwoFactorOTP = twoFactorOTPService.findByUser(authUser.getId());
+
+			if(oldTwoFactorOTP != null){
+				twoFactorOTPService.deleteTwoFactorOTP(oldTwoFactorOTP);
+			}
+			TwoFactorOTP newTwoFactorOTP = twoFactorOTPService.createTwoFactorOTP(authUser, otp, jwt);
+			emailService.sendVerificationOtpEmail(authUser.getEmail(), otp);
+			res.setSession(newTwoFactorOTP.getId());
+
+			return new ResponseEntity<>(res, HttpStatus.CREATED);
+		}
 		AuthResponse res = new AuthResponse();
 		res.setJwt(jwt);
 		res.setStatus(true);
 		res.setMessage("User logged in successfully...");
 
-		return new ResponseEntity<>(res, HttpStatus.CREATED);
+		return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
 
 	}
 
 	private Authentication authenticate(String userName, String password) {
-
 
 		UserDetails userDetails = customUserDetailsService.loadUserByUsername(userName);
 
@@ -102,5 +127,23 @@ public class AuthController {
 			throw new BadCredentialsException("Invalid password");
 		}
 		return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+	}
+
+	@PostMapping("/two-factor/otp/{otp}")
+	public ResponseEntity<AuthResponse> verifySigninOtp(
+			@PathVariable String otp,
+			@RequestParam String id
+	)throws Exception{
+		TwoFactorOTP twoFactorOTP = twoFactorOTPService.findById(id);
+
+		if(twoFactorOTPService.verifyTwoFactorOTP(twoFactorOTP, otp)){
+			AuthResponse res = new AuthResponse();
+			res.setStatus(true);
+			res.setMessage("Two Factor Authentication success");
+			res.setTwoFactorAuthEnabled(true);
+			res.setJwt(twoFactorOTP.getJwt());
+			return new ResponseEntity<>(res, HttpStatus.OK);
+		}
+		throw new Exception("Invalid OTP");
 	}
 }
