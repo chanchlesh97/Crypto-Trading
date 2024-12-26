@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface ForgotPasswordService {
-    public ForgotPasswordToken createForgotPasswordToken(User user,
+     ForgotPasswordToken createForgotPasswordToken(User user,
                                                          String id,
                                                          String otp,
                                                          VerificationType verificationType,
                                                          String sendTo);
-    public ForgotPasswordToken findForgotPasswordTokenByUser(User user);
-    public ForgotPasswordToken findForgotPasswordTokenById(String id);
-    public void deleteForgotPasswordToken(ForgotPasswordToken forgotPasswordToken);
+     ForgotPasswordToken findForgotPasswordTokenByUser(User user);
+     ForgotPasswordToken findForgotPasswordTokenById(String id);
+     void deleteForgotPasswordToken(ForgotPasswordToken forgotPasswordToken);
 }

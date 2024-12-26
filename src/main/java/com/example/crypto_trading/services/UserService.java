@@ -6,12 +6,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService {
-    public User findUserProfileByJwt(String jwt) throws Exception;
-    public User findUserProfileById(String id);
-    public User findUserProfileByEmail(String email) throws Exception;
+     User findUserProfileByJwt(String jwt) throws Exception;
+//     User findUserProfileById(String id);
+     User findUserProfileByEmail(String email) throws Exception;
 
-    public User enableTwoFactorAuth(VerificationType verificationType, String sendTo, User user);
+     User enableTwoFactorAuth(VerificationType verificationType, String sendTo, User user);
 
-    public User updatePassword(User user, String password);
+//     User updatePassword(User user, String password);
 
 }

@@ -31,14 +31,14 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    @Override
-    public User findUserProfileById(String id) {
-        Optional<User> user = userRepository.findById(id);
-        if(user.isEmpty()){
-            throw new RuntimeException("User not found");
-        }
-        return user.get();
-    }
+//    @Override
+//    public User findUserProfileById(String id) {
+//        Optional<User> user = userRepository.findById(id);
+//        if(user.isEmpty()){
+//            throw new RuntimeException("User not found");
+//        }
+//        return user.get();
+//    }
 
     @Override
     public User findUserProfileByEmail(String email) throws Exception {
@@ -60,9 +60,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    @Override
-    public User updatePassword(User user, String password) {
-        user.setPassword(password);
-        return userRepository.save(user);
-    }
+//    @Override
+//    public User updatePassword(User user, String password) {
+//        user.setPassword(password);
+//        return userRepository.save(user);
+//    }
 }

@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 @Service
 public interface VerificationCodeService {
 
-    public VerificationCode sendVerificationCode(User user, VerificationType verificationType);
+     VerificationCode sendVerificationCode(User user, VerificationType verificationType);
 
-    public VerificationCode getVerificationCodeById(String id) throws Exception;
+     VerificationCode getVerificationCodeById(String id) throws Exception;
 
-    public VerificationCode getVerificationCodeByUser(User user);
+     VerificationCode getVerificationCodeByUser(User user);
 
-    public void deleteVerificationCode(VerificationCode verificationCode);
+     void deleteVerificationCode(VerificationCode verificationCode);
 }
