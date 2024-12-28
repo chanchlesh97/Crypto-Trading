@@ -13,6 +13,6 @@ public interface ForgotPasswordService {
                                                          VerificationType verificationType,
                                                          String sendTo);
      ForgotPasswordToken findForgotPasswordTokenByUser(User user);
-     ForgotPasswordToken findForgotPasswordTokenById(String id);
+     ForgotPasswordToken findForgotPasswordTokenById(Long id);
      void deleteForgotPasswordToken(ForgotPasswordToken forgotPasswordToken);
 }

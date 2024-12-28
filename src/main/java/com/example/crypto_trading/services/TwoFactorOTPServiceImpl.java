@@ -34,7 +34,7 @@ public class TwoFactorOTPServiceImpl implements TwoFactorOTPService{
     }
 
     @Override
-    public TwoFactorOTP findByUser(String id) {
+    public TwoFactorOTP findByUser(Long id) {
 
         return twoFactorOTPRepository.findByUserId(id);
     }
