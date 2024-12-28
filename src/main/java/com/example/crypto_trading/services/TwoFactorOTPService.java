@@ -11,7 +11,7 @@ public interface TwoFactorOTPService {
 
     TwoFactorOTP getTwoFactorOTP(User user );
 
-    TwoFactorOTP findByUser(String userId);
+    TwoFactorOTP findByUser(Long userId);
     TwoFactorOTP findById(String id);
 
     boolean verifyTwoFactorOTP(TwoFactorOTP twoFactorOTP, String otp);

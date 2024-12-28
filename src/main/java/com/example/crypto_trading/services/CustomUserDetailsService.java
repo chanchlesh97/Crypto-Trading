@@ -2,7 +2,6 @@ package com.example.crypto_trading.services;
 
 import com.example.crypto_trading.modal.User;
 import com.example.crypto_trading.respository.UserRepository;
-import org.hibernate.sql.ast.tree.expression.Over;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

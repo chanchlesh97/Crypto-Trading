@@ -104,7 +104,7 @@ public class UserController {
 
     @PatchMapping("/api/users/reset-password/verify-otp/{otp}")
     public ResponseEntity<ApiResponse> verifyResetPasswordOtp(
-            @RequestParam String id,
+            @RequestParam Long id,
             @RequestBody ResetPasswordRequest resetPasswordRequest
             ) throws Exception {
 
