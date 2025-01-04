@@ -16,7 +16,7 @@ public class Withdrawal {
 
     private WithdrawalStatus status;
 
-    private double amount;
+    private Long amount;
     @ManyToOne
     private User user;
 
