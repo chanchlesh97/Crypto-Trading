@@ -3,19 +3,19 @@ package com.example.crypto_trading.modal;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Entity
-public class Asset {
+public class WatchList {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private double quantity;
-    private double buyPrice;
-
-    @ManyToOne
-    private Coin coin;
-
-    @ManyToOne
+    @OneToOne
     private User user;
+
+    @ManyToMany
+    private List<Coin> coins = new ArrayList<>();
 }
