@@ -28,6 +28,7 @@ public class JwdProvider {
     }
 
     public static String getEmailFromToken(String token) {
+        token =token.substring(7);
         Claims claims =  Jwts.parser().verifyWith(secretKey).build()
                 .parseSignedClaims(token)
                 .getPayload();

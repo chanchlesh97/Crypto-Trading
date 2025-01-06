@@ -31,7 +31,9 @@ public class JwtTokenValidator  extends OncePerRequestFilter{
 		String jwt = request.getHeader(JwtConstants.JWT_HEADER);
 		
 		if(jwt != null) {
-			jwt.substring(7);
+			jwt = jwt.substring(7);
+			System.out.println("Authorization Token: [{}] "+jwt);
+
 			try {
 				SecretKey key = Keys.hmacShaKeyFor(JwtConstants.SECRET_KEY.getBytes());
 

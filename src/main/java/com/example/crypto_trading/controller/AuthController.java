@@ -6,6 +6,7 @@ import com.example.crypto_trading.response.AuthResponse;
 import com.example.crypto_trading.services.CustomUserDetailsService;
 import com.example.crypto_trading.services.EmailService;
 import com.example.crypto_trading.services.TwoFactorOTPService;
+import com.example.crypto_trading.services.WatchListService;
 import com.example.crypto_trading.utils.OtpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,8 @@ public class AuthController {
 	@Autowired
 	private EmailService emailService;
 
+	@Autowired
+	private WatchListService watchListService;
 
 	@GetMapping("/signup")
     public String signUpPage() {
@@ -56,6 +59,8 @@ public class AuthController {
 		newUser.setPassword(user.getPassword());
 		newUser.setFullName(user.getFullName());
 		User savedUser = userRepository.save(newUser);
+
+		watchListService.createWatchList(savedUser);
 
 		Authentication authentication = new UsernamePasswordAuthenticationToken(
 				user.getEmail(),
