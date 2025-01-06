@@ -36,7 +36,8 @@ public class UserController {
     private ForgotPasswordService forgotPasswordService;
 
     @GetMapping("/api/users/profile")
-    public ResponseEntity<User> getUserProfile(@RequestParam("Authorization") String jwt) throws Exception {
+    public ResponseEntity<User> getUserProfile(@RequestHeader("Authorization") String jwt) throws Exception {
+        System.out.println("JWT: "+jwt);
         User user = userService.findUserProfileByJwt(jwt);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -48,7 +49,7 @@ public class UserController {
             ) throws Exception {
         User user = userService.findUserProfileByJwt(jwt);
 
-        VerificationCode verificationCode = verificationCodeService.getVerificationCodeById(user.getId());
+        VerificationCode verificationCode = verificationCodeService.getVerificationCodeByUser(user);
         if(verificationCode == null){
             verificationCode = verificationCodeService.sendVerificationCode(user, verificationType);
         }
@@ -66,7 +67,7 @@ public class UserController {
             ) throws Exception {
         User user = userService.findUserProfileByJwt(jwt);
 
-        VerificationCode verificationCode = verificationCodeService.getVerificationCodeById(user.getId());
+        VerificationCode verificationCode = verificationCodeService.getVerificationCodeByUser(user);
         String sendTo =  verificationCode.getVerificationType().equals(VerificationType.EMAIL) ? user.getEmail() : user.getMobile();
         boolean isVerified = verificationCode.getOtp().equals(otp);
         if(isVerified){

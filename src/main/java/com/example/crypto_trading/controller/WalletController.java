@@ -1,9 +1,11 @@
 package com.example.crypto_trading.controller;
 
 import com.example.crypto_trading.modal.Order;
+import com.example.crypto_trading.modal.PaymentOrder;
 import com.example.crypto_trading.modal.User;
 import com.example.crypto_trading.modal.Wallet;
 import com.example.crypto_trading.request.WalletTransactionRequest;
+import com.example.crypto_trading.response.PaymentResponse;
 import com.example.crypto_trading.services.OrderService;
 import com.example.crypto_trading.services.PaymentService;
 import com.example.crypto_trading.services.UserService;
@@ -57,10 +59,11 @@ public class WalletController {
     }
 
     @PutMapping("/api/wallet/order/{orderId}/pay")
-    public ResponseEntity<Wallet> doOrderPayment(
+    public ResponseEntity<Wallet> payOrderPayment(
             @RequestHeader("Authorization") String jwt,
-            @PathVariable Long orderId,
-            @RequestBody WalletTransactionRequest walletTransactionRequest) throws Exception {
+            @PathVariable Long orderId
+//            @RequestBody WalletTransactionRequest walletTransactionRequest
+    ) throws Exception {
         User user = userService.findUserProfileByJwt(jwt);
 
         Order order = orderService.getOrderById(orderId);
@@ -73,13 +76,17 @@ public class WalletController {
     @PutMapping("/api/wallet/deposit")
     public ResponseEntity<Wallet> addMoneyToWallet(
             @RequestHeader("Authorization") String jwt,
-            @PathVariable Long orderId,
-            @RequestBody WalletTransactionRequest walletTransactionRequest) throws Exception {
+            @RequestParam(name ="order_id") Long orderId,
+            @RequestParam(name="payment_id") String paymentId) throws Exception {
         User user = userService.findUserProfileByJwt(jwt);
 
-        Order order = orderService.getOrderById(orderId);
 
-        Wallet wallet = walletService.payOrderPayment(order, user);
+        Wallet wallet = walletService.getUserWallet(user);
+        PaymentOrder order = paymentService.getPaymentOrderById(orderId);
+        Boolean status = paymentService.proceedPaymentOrder(order, paymentId);
+        if(status) {
+            wallet = walletService.addBalance(wallet, order.getAmount());
+        }
 
         return new ResponseEntity<>(wallet, HttpStatus.ACCEPTED);
     }

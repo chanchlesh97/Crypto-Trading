@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/coin")
+@RequestMapping("/api/coins")
 public class CoinController {
 
     @Autowired
@@ -23,13 +23,13 @@ public class CoinController {
     private CoinService coinService;
 
     @GetMapping
-    ResponseEntity<List<Coin>> getCoinList(@RequestParam("page") int page) throws Exception {
+    ResponseEntity<List<Coin>> getCoinList(@RequestParam(name="page", required = false) int page) throws Exception {
         List<Coin> coinList = coinService.getCoinList(page);
         return new ResponseEntity<>(coinList, HttpStatus.ACCEPTED ) ;
     }
 
-    @GetMapping("/{coinId}/chart")
-    ResponseEntity<JsonNode> getMarketChart(@PathVariable("coinId") String coinId, @RequestParam("days") String days) throws Exception {
+    @GetMapping("/chart")
+    ResponseEntity<JsonNode> getMarketChart(@RequestParam("coin_id") String coinId, @RequestParam("days") String days) throws Exception {
         String marketChart = coinService.getMarketChart(coinId, days);
         JsonNode jsonNode = objectMapper.readTree(marketChart);
         return new ResponseEntity<>(jsonNode, HttpStatus.ACCEPTED ) ;
@@ -49,10 +49,10 @@ public class CoinController {
         return new ResponseEntity<>(jsonNode, HttpStatus.ACCEPTED ) ;
     }
 
-    @GetMapping("/trading")
-    ResponseEntity<JsonNode> getTradingCoins() throws JsonProcessingException {
-        String tradingCoins = coinService.getTradingCoins();
-        JsonNode jsonNode = objectMapper.readTree(tradingCoins);
+    @GetMapping("/trending")
+    ResponseEntity<JsonNode> getTrendingCoins() throws JsonProcessingException {
+        String trendingCoins = coinService.getTrendingCoins();
+        JsonNode jsonNode = objectMapper.readTree(trendingCoins);
         return new ResponseEntity<>(jsonNode, HttpStatus.ACCEPTED ) ;
     }
 
