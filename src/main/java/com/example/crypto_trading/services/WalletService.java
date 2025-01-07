@@ -6,6 +6,7 @@ import com.example.crypto_trading.modal.Wallet;
 
 public interface WalletService {
 
+    void createWallet(User user);
     Wallet getUserWallet(User user);
     Wallet addBalance(Wallet wallet, Long money);
 
