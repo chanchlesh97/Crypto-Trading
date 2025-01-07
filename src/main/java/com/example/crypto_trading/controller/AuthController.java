@@ -3,10 +3,7 @@ package com.example.crypto_trading.controller;
 import com.example.crypto_trading.config.JwdProvider;
 import com.example.crypto_trading.modal.TwoFactorOTP;
 import com.example.crypto_trading.response.AuthResponse;
-import com.example.crypto_trading.services.CustomUserDetailsService;
-import com.example.crypto_trading.services.EmailService;
-import com.example.crypto_trading.services.TwoFactorOTPService;
-import com.example.crypto_trading.services.WatchListService;
+import com.example.crypto_trading.services.*;
 import com.example.crypto_trading.utils.OtpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,6 +37,9 @@ public class AuthController {
 	@Autowired
 	private WatchListService watchListService;
 
+	@Autowired
+	private WalletService walletService;
+
 	@GetMapping("/signup")
     public String signUpPage() {
         return "auth/signup";
@@ -61,6 +61,7 @@ public class AuthController {
 		User savedUser = userRepository.save(newUser);
 
 		watchListService.createWatchList(savedUser);
+		walletService.createWallet(savedUser);
 
 		Authentication authentication = new UsernamePasswordAuthenticationToken(
 				user.getEmail(),
@@ -94,7 +95,7 @@ public class AuthController {
 		String jwt = JwdProvider.generateToken(authentication);
 
 		User authUser = userRepository.findByEmail(userName);
-
+//		walletService.createWallet(authUser);
 		if(authUser.getTwoFactorAuth().isEnabled()){
 			AuthResponse res = new AuthResponse();
 			res.setMessage("Two factor authentication enabled");

@@ -78,7 +78,7 @@ public class PaymentServiceImpl implements PaymentService{
     }
 
     @Override
-    public PaymentResponse createRazorpayPaymentLink(User user, Long amount) {
+    public PaymentResponse createRazorpayPaymentLink(User user, Long amount, Long orderId) {
         Long totalAmount = amount * 100;
         try{
             //Initiate a Razorpay client
@@ -105,7 +105,7 @@ public class PaymentServiceImpl implements PaymentService{
             paymentListRequest.put("reminder_enable", true);
 
             //Set the callback URL and method
-            paymentListRequest.put("callback_url", "https://localhost:5173/wallet");
+            paymentListRequest.put("callback_url", "https://localhost:5173/wallet?order_id="+orderId);
             paymentListRequest.put("callback_method", "get");
 
             //Create the payment link

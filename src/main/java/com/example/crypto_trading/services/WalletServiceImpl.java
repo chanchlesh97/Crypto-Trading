@@ -18,12 +18,20 @@ public class WalletServiceImpl implements WalletService {
     private WalletRepository walletRepository;
 
     @Override
+    public void createWallet(User user) {
+        Wallet wallet = new Wallet();
+        wallet.setUser(user);
+        wallet.setBalance(BigDecimal.ZERO);
+        walletRepository.save(wallet);
+    }
+
+    @Override
     public Wallet getUserWallet(User user) {
-        Optional<Wallet> wallet = walletRepository.findById(user.getId());
-        if (wallet.isEmpty()) {
+        Wallet wallet = walletRepository.findByUserId(user.getId());
+        if (wallet == null) {
             throw new RuntimeException("Wallet not found");
         }
-        return wallet.get();
+        return wallet;
     }
 
     @Override
